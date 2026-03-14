@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% import "_macros.html" as macros %} {% block content %}
+<form method="POST" action="/" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+    <div class="bg-blue-300 p-6 rounded-lg border border-gray-400 shadow-md mb-6">
+        
+        <div class="grid grid-cols-4 gap-4 mb-2">
+            {{ macros.camposNuevos(form.nombre, class="w-full p-1 rounded border text-sm") }}
+            {{ macros.camposNuevos(form.direccion, class="w-full p-1 rounded border text-sm") }}
+            {{ macros.camposNuevos(form.telefono, class="w-full p-1 rounded border text-sm") }}
+            {{ macros.camposNuevos(form.fecha, class="w-full p-1 rounded border text-sm") }}
+        </div>
+
+        <div class="grid grid-cols-3 gap-6 mb-4">
+            
+            <div class="border border-white p-4 rounded">
+                <p class="font-bold text-gray-800 text-sm mb-2">Tamaño Pizza</p>
+                {% for subfield in form.tamano %}
+                    <label class="block cursor-pointer text-sm mb-1">
+                        {{ subfield(class="mr-1") }} {{ subfield.label.text }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <div class="border border-white p-4 rounded">
+                <p class="font-bold text-gray-800 text-sm mb-2">Ingredientes</p>
+                {% for subfield in form.ingredientes %}
+                    <label class="block cursor-pointer text-sm mb-1">
+                        {{ subfield(class="mr-1") }} {{ subfield.label.text }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <div class="flex flex-col justify-center items-center">
+                {{ macros.camposNuevos(form.num_pizzas, class="w-24 p-1 rounded border text-center text-sm") }}
+                
+                <button type="submit" name="agregar" value="1" class="bg-gray-200 hover:bg-gray-300 text-black px-6 py-1 rounded shadow border border-gray-400 text-sm font-semibold mt-2">
+                    Agregar
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6">
+        
+        <div class="bg-blue-300 p-6 rounded-lg border border-gray-400 shadow-md flex flex-col justify-between">
+            <div class="bg-gray-400 min-h-[200px] border border-gray-500 overflow-hidden">
+                <table class="w-full bg-white text-sm text-center">
+                    <thead class="bg-white border-b border-gray-400">
+                        <tr>
+                            <th class="p-1 border-r border-gray-400">Sel</th>
+                            <th class="p-1 border-r border-gray-400">Tamaño</th>
+                            <th class="p-1 border-r border-gray-400">Ingredientes</th>
+                            <th class="p-1 border-r border-gray-400">Num. Pizzas</th>
+                            <th class="p-1">Sub Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-gray-300">
+                        {% for item in carrito %}
+                        <tr class="border-b border-gray-400 bg-gray-200">
+                            <td class="p-1 border-r border-gray-400">
+                                <button type="submit" name="quitar" value="{{ item.id_temp }}" formnovalidate class="text-red-600 font-bold hover:text-red-800">X</button>
+                            </td>
+                            <td class="p-1 border-r border-gray-400">{{ item.tamano }}</td>
+                            <td class="p-1 border-r border-gray-400">{{ item.ingredientes }}</td>
+                            <td class="p-1 border-r border-gray-400">{{ item.cantidad }}</td>
+                            <td class="p-1">${{ item.subtotal }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="flex justify-end mt-4">
+                <button type="submit" name="terminar" value="1" class="bg-gray-200 hover:bg-gray-300 text-black px-8 py-2 rounded shadow border border-gray-400 font-semibold">
+                    Terminar
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-blue-300 p-6 rounded-lg border border-gray-400 shadow-md">
+            <div class="bg-gray-400 border border-gray-500 h-full p-6 flex flex-col justify-between relative">
+                <p class="absolute top-2 left-2 text-xs text-gray-700">Ventas del dia</p>
+                <div class="mt-4 text-center text-lg font-bold">
+                    {% for pedido in ventas_hoy %}
+                        <p class="mb-2">{{ pedido.cliente.nombre }} total ${{ pedido.total }}</p>
+                    {% else %}
+                        <p class="text-gray-600 font-normal">No hay ventas hoy aún.</p>
+                    {% endfor %}
+                    <br>
+                    <p class="text-xl mt-4">Ventas totales del dia: <span class="text-black">${{ total_hoy }}</span></p>
+                </div>
+                
+                <div class="mt-6 flex justify-center">
+                    <a href="{{ url_for('ventas') }}" class="bg-gray-200 hover:bg-gray-300 text-black px-8 py-1 rounded shadow border border-gray-400 text-sm">
+                        Ventas totales por dia / mes
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</form>
+{% endblock %}

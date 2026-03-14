@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4">Detalle del Pedido #{{ pedido.id_pedido }}</h2>
+    
+    <div class="bg-blue-50 p-4 rounded mb-6 border border-blue-200">
+        <p><strong>Cliente:</strong> {{ pedido.cliente.nombre }}</p>
+        <p><strong>Dirección:</strong> {{ pedido.cliente.direccion }}</p>
+        <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
+    </div>
+
+    <table class="w-full text-left border-collapse mb-6">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-2 border-b">Tamaño</th>
+                <th class="p-2 border-b">Ingredientes</th>
+                <th class="p-2 border-b text-center">Cantidad</th>
+                <th class="p-2 border-b text-right">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detalle in pedido.detalles %}
+            <tr>
+                <td class="p-2 border-b">{{ detalle.pizza.tamano }}</td>
+                <td class="p-2 border-b">{{ detalle.pizza.ingredientes }}</td>
+                <td class="p-2 border-b text-center">{{ detalle.cantidad }}</td>
+                <td class="p-2 border-b text-right">${{ detalle.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-right text-xl font-bold">
+        Total Pagado: ${{ pedido.total }}
+    </div>
+
+    <div class="mt-8">
+        <button onclick="history.back()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded">
+            Regresar
+        </button>
+    </div>
+</div>
+{% endblock %}

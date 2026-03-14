@@ -1,0 +1,15 @@
+{% macro camposNuevos(field) %}
+<div class="mb-4">
+    <label class="block font-bold text-gray-800 text-sm mb-1">{{ field.label }}</label>
+    <dd>
+        {{ field(**kwargs) | safe }}
+    </dd>
+    {% if field.errors %}
+    <ul class="mt-1">
+        {% for error in field.errors %}
+            <li class="text-red-500 text-xs font-semibold list-none italic">* {{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endmacro %}
